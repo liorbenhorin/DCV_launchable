@@ -92,10 +92,9 @@ RUN systemctl mask systemd-logind.service \
 
 # Enable only the services we need
 RUN systemctl enable dcvserver.service \
-    && systemctl enable gdm.service \
     && systemctl enable ssh.service \
     && systemctl enable dcv-setup.service \
-    && systemctl set-default graphical.target
+    && systemctl set-default multi-user.target
 
 # Expose ports
 EXPOSE 22 8443

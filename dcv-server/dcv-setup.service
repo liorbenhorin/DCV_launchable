@@ -1,12 +1,14 @@
 [Unit]
-Description=DCV Initial Setup
-Before=dcvserver.service gdm.service
-After=network.target
+Description=DCV Session Creator
+After=dcvserver.service
+Requires=dcvserver.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/local/bin/dcv-setup.sh
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
