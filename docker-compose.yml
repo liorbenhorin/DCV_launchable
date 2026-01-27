@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  dcv-server:
+    build:
+      context: ./dcv-server
+      dockerfile: Dockerfile
+    container_name: dcv-server
+    hostname: dcv-server
+    network_mode: "host"
+    privileged: true
+    environment:
+      - ENV=brev
+      - DISPLAY=:0
+      - XDG_SESSION_TYPE=x11
+    volumes:
+      - dcv-home:/home/ubuntu
+      - dcv-cache:/var/cache
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu, utility, compute, graphics, display]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "-x", "dcvserver"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx-proxy
+    network_mode: "host"
+    depends_on:
+      - dcv-server
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  dcv-home:
+    driver: local
+  dcv-cache:
+    driver: local

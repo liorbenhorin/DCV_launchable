@@ -1,0 +1,13 @@
+version: '3.8'
+
+# Override file for local development builds
+services:
+  dcv-server:
+    build:
+      context: ./dcv-server
+      dockerfile: Dockerfile
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile

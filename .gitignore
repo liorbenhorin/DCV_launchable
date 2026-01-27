@@ -1,0 +1,28 @@
+# Environment files
+.env
+*.env
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+
+# Cache directories
+var/
+cache/
+*-cache/
+
+# Docker volumes
+volumes/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
