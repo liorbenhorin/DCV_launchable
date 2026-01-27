@@ -96,11 +96,14 @@ RUN systemctl enable dcvserver.service \
     && systemctl enable dcv-setup.service \
     && systemctl set-default multi-user.target
 
-# Add hostname to /etc/hosts for DCV certificate generation
-RUN echo "127.0.0.1 dcv-server" >> /etc/hosts
+# Create entrypoint wrapper to setup hostname before systemd starts
+RUN echo '#!/bin/bash' > /entrypoint.sh \
+    && echo 'echo "127.0.0.1 dcv-server" >> /etc/hosts' >> /entrypoint.sh \
+    && echo 'exec /sbin/init "$@"' >> /entrypoint.sh \
+    && chmod +x /entrypoint.sh
 
 # Expose ports
 EXPOSE 22 8443
 
-# Set systemd as entrypoint
-ENTRYPOINT ["/sbin/init"]
+# Set wrapper as entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
