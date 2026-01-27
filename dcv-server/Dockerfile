@@ -77,11 +77,25 @@ COPY dcv-setup.sh /usr/local/bin/dcv-setup.sh
 COPY dcv-setup.service /etc/systemd/system/dcv-setup.service
 RUN chmod +x /usr/local/bin/dcv-setup.sh
 
-# Enable services
+# Mask services that don't work in containers
+RUN systemctl mask systemd-logind.service \
+    && systemctl mask systemd-udevd.service \
+    && systemctl mask systemd-oomd.service \
+    && systemctl mask systemd-resolved.service \
+    && systemctl mask networkd-dispatcher.service \
+    && systemctl mask ModemManager.service \
+    && systemctl mask acpid.service \
+    && systemctl mask acpid.path \
+    && systemctl mask acpid.socket \
+    && systemctl mask snapd.service \
+    && systemctl mask snapd.socket
+
+# Enable only the services we need
 RUN systemctl enable dcvserver.service \
     && systemctl enable gdm.service \
     && systemctl enable ssh.service \
-    && systemctl enable dcv-setup.service
+    && systemctl enable dcv-setup.service \
+    && systemctl set-default graphical.target
 
 # Expose ports
 EXPOSE 22 8443

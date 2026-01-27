@@ -13,15 +13,14 @@ services:
       - ENV=brev
       - DISPLAY=:0
       - XDG_SESSION_TYPE=x11
+    stop_signal: SIGRTMIN+3
     volumes:
       - dcv-home:/home/ubuntu
       - dcv-cache:/var/cache
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     tmpfs:
       - /run
       - /run/lock
-      - /tmp
     deploy:
       resources:
         reservations:
