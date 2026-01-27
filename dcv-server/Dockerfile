@@ -21,9 +21,7 @@ RUN apt-get update && apt-get install -y \
     mesa-utils \
     x11-apps \
     dbus-x11 \
-    xvfb \
-    x11vnc \
-    metacity \
+    x11-xserver-utils \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -59,10 +57,11 @@ RUN mkdir -p /run/sshd \
     && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config \
     && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 
-# Configure GDM3 to use X11 instead of Wayland
+# Configure GDM3 to use X11 and enable auto-login for ubuntu user
 RUN echo "[daemon]" > /etc/gdm3/custom.conf \
     && echo "WaylandEnable=false" >> /etc/gdm3/custom.conf \
-    && echo "AutomaticLoginEnable=false" >> /etc/gdm3/custom.conf
+    && echo "AutomaticLoginEnable=true" >> /etc/gdm3/custom.conf \
+    && echo "AutomaticLogin=ubuntu" >> /etc/gdm3/custom.conf
 
 # Create DCV configuration directory
 RUN mkdir -p /etc/dcv
