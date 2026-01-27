@@ -47,36 +47,46 @@ mkdir -p $XDG_RUNTIME_DIR
 chown ubuntu:ubuntu $XDG_RUNTIME_DIR
 chmod 700 $XDG_RUNTIME_DIR
 
-# Start GDM3 display manager
-echo "Starting GDM3 display manager..."
-systemctl start gdm3 2>/dev/null || /usr/sbin/gdm3 &
+# Create DCV log directory
+mkdir -p /var/log/dcv
+chown ubuntu:ubuntu /var/log/dcv
+
+# Start DCV server daemon
+echo "Starting DCV server..."
+dcvserver 2>&1 &
+DCV_PID=$!
 sleep 5
 
-# Start DCV server
-echo "Starting DCV server..."
-dcvserver -d
-sleep 3
-
 # Check if DCV server is running
-if pgrep -x "dcvserver" > /dev/null; then
-    echo "DCV server is running"
+if ps -p $DCV_PID > /dev/null; then
+    echo "DCV server is running (PID: $DCV_PID)"
 else
-    echo "Warning: DCV server may not have started correctly"
+    echo "ERROR: DCV server failed to start!"
+    cat /var/log/dcv/server.log 2>/dev/null || echo "No server log available"
+    exit 1
 fi
+
+# Wait for DCV server to be ready
+echo "Waiting for DCV server to be ready..."
+for i in {1..30}; do
+    if dcv list-sessions 2>/dev/null; then
+        echo "DCV server is ready"
+        break
+    fi
+    sleep 1
+done
 
 # Create DCV console session for ubuntu user
 echo "Creating DCV console session..."
-dcv create-session --type=console --owner ubuntu console --storage-root /home/ubuntu
-if [ $? -eq 0 ]; then
-    echo "DCV console session created successfully"
-else
-    echo "Note: Console session may already exist or will be created automatically"
-fi
+dcv create-session --type=console --owner ubuntu --storage-root /home/ubuntu console 2>&1 || {
+    echo "Note: Console session creation returned error, checking if session exists..."
+    dcv list-sessions
+}
 
 # List active sessions
+echo "=============================================="
 echo "Active DCV sessions:"
 dcv list-sessions
-
 echo "=============================================="
 echo "DCV Server is ready!"
 echo "=============================================="
@@ -88,5 +98,9 @@ echo "  Username: ubuntu"
 echo "  Password: 1234"
 echo "=============================================="
 
-# Keep container running and tail logs
-tail -f /var/log/dcv/server.log 2>/dev/null || tail -f /dev/null
+# Keep container running and show logs
+echo "Tailing DCV server logs..."
+tail -f /var/log/dcv/server.log 2>/dev/null || {
+    echo "Server log not available, keeping container alive..."
+    tail -f /dev/null
+}

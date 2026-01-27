@@ -3,8 +3,8 @@ FROM openresty/openresty:alpine
 # Install openssl for certificate generation
 RUN apk add --no-cache openssl
 
-# Create directory for SSL certificates
-RUN mkdir -p /etc/nginx/ssl
+# Create directories for SSL certificates and logs
+RUN mkdir -p /etc/nginx/ssl /var/log/nginx
 
 # Copy nginx configuration
 COPY nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
