@@ -36,22 +36,6 @@ services:
       retries: 3
       start_period: 60s
 
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    container_name: nginx-proxy
-    network_mode: "host"
-    depends_on:
-      - dcv-server
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
 volumes:
   dcv-home:
     driver: local
