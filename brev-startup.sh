@@ -8,11 +8,6 @@ cd ~/DCV_launchable
 
 echo "Starting DCV Launchable deployment..."
 
-# Pull latest changes if git repo exists
-if [ -d .git ]; then
-    git pull || true
-fi
-
 # Deploy using docker compose
 docker compose up -d --build
 
