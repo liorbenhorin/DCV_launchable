@@ -19,7 +19,6 @@ RUN apt-get update && apt-get install -y \
     fonts-noto \
     fonts-noto-color-emoji \
     xsettingsd \
-    firefox \
     openssh-server \
     sudo \
     wget \
@@ -32,6 +31,16 @@ RUN apt-get update && apt-get install -y \
     x11-apps \
     dbus-x11 \
     x11-xserver-utils \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Firefox from Mozilla PPA (not snap)
+RUN add-apt-repository -y ppa:mozillateam/ppa \
+    && echo 'Package: *' > /etc/apt/preferences.d/mozilla-firefox \
+    && echo 'Pin: release o=LP-PPA-mozillateam' >> /etc/apt/preferences.d/mozilla-firefox \
+    && echo 'Pin-Priority: 1001' >> /etc/apt/preferences.d/mozilla-firefox \
+    && apt-get update \
+    && apt-get install -y firefox \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -72,6 +81,31 @@ RUN mkdir -p /home/ubuntu/.config/gtk-3.0 \
     && echo 'gtk-icon-theme-name="Papirus-Dark"' >> /home/ubuntu/.gtkrc-2.0 \
     && echo 'gtk-font-name="Noto Sans 10"' >> /home/ubuntu/.gtkrc-2.0 \
     && chown -R ubuntu:ubuntu /home/ubuntu/.config /home/ubuntu/.gtkrc-2.0
+
+# Create desktop shortcuts for Firefox and VSCode
+RUN mkdir -p /home/ubuntu/Desktop \
+    && echo '[Desktop Entry]' > /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'Version=1.0' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'Type=Application' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'Name=Firefox Web Browser' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'Comment=Browse the World Wide Web' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'Exec=/usr/bin/firefox %u' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'Icon=firefox' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'Terminal=false' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'Categories=Network;WebBrowser;' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo 'StartupNotify=true' >> /home/ubuntu/Desktop/firefox.desktop \
+    && echo '[Desktop Entry]' > /home/ubuntu/Desktop/code.desktop \
+    && echo 'Version=1.0' >> /home/ubuntu/Desktop/code.desktop \
+    && echo 'Type=Application' >> /home/ubuntu/Desktop/code.desktop \
+    && echo 'Name=Visual Studio Code' >> /home/ubuntu/Desktop/code.desktop \
+    && echo 'Comment=Code Editing. Redefined.' >> /home/ubuntu/Desktop/code.desktop \
+    && echo 'Exec=/usr/share/code/code --no-sandbox --unity-launch %F' >> /home/ubuntu/Desktop/code.desktop \
+    && echo 'Icon=com.visualstudio.code' >> /home/ubuntu/Desktop/code.desktop \
+    && echo 'Terminal=false' >> /home/ubuntu/Desktop/code.desktop \
+    && echo 'Categories=Development;IDE;' >> /home/ubuntu/Desktop/code.desktop \
+    && echo 'StartupNotify=true' >> /home/ubuntu/Desktop/code.desktop \
+    && chmod +x /home/ubuntu/Desktop/*.desktop \
+    && chown -R ubuntu:ubuntu /home/ubuntu/Desktop
 
 # Configure SSH
 RUN mkdir -p /run/sshd \

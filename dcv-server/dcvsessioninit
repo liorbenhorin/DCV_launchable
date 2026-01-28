@@ -20,6 +20,9 @@ openbox &
 # Wait for WM
 sleep 2
 
+# Start Thunar daemon for desktop file management
+thunar --daemon &
+
 # Start XFCE panel
 xfce4-panel --disable-wm-check &
 
