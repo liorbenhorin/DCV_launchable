@@ -1,20 +1,20 @@
 # NiceDCV Brev Launchable
 
-A Brev launchable that provides a complete Ubuntu 22.04 GNOME desktop environment with NICE DCV remote desktop access and GPU acceleration support.
+A Brev launchable that provides a complete Ubuntu 22.04 XFCE desktop environment with NICE DCV remote desktop access and GPU acceleration support.
 
 ## Overview
 
 This launchable provides:
 - **Remote Desktop**: NICE DCV server with web and native client support
 - **SSH Access**: Standard SSH access for terminal operations
-- **GNOME Desktop**: Full Ubuntu 22.04 GNOME desktop environment
+- **XFCE Desktop**: Lightweight XFCE4 desktop with openbox window manager, optimized for containers
 - **GPU Acceleration**: NVIDIA GPU support for graphics and compute
 - **Pre-installed Software**: Firefox, VSCode, and essential development tools
 
 ## Architecture
 
 ```
-User Browser/Client → Nginx (SSL) → DCV Server (GNOME Desktop + GPU)
+User Browser/Client → Nginx (SSL) → DCV Server (XFCE Desktop + GPU)
 User SSH Client → Nginx → DCV Server (SSH)
 ```
 
@@ -32,6 +32,11 @@ User SSH Client → Nginx → DCV Server (SSH)
 ```bash
 git clone <repository-url>
 cd DCV_launchable
+just deploy
+```
+
+Or without `just`:
+```bash
 docker compose up -d
 ```
 
@@ -45,7 +50,7 @@ docker compose logs -f dcv-server
 ### 3. Connect
 
 **DCV Web Client:**
-- URL: `https://<instance-ip>:8443`
+- URL: `https://<instance-ip>:8443/dcv`
 - Username: `ubuntu`
 - Password: `brevdemo123`
 
@@ -79,12 +84,13 @@ ssh ubuntu@<instance-ip>
 ### DCV Settings
 
 The DCV server is configured with:
-- Console session for `ubuntu` user
+- Virtual session for `ubuntu` user (not console session)
 - System authentication (PAM)
 - 25 FPS target frame rate
 - QUIC protocol enabled
 - Clipboard integration
 - Stylus and touch input support
+- XFCE4 desktop with openbox window manager for container stability
 
 Configuration file: `dcv-server/dcv.conf`
 
@@ -156,19 +162,19 @@ ssh -p 22 ubuntu@localhost
 
 ### Display Issues
 
-1. Check DISPLAY environment:
+1. Check DCV session status:
 ```bash
-docker compose exec dcv-server echo $DISPLAY
+docker compose exec dcv-server dcv list-sessions
 ```
 
-2. Verify GDM3 is running:
+2. Verify desktop components are running:
 ```bash
-docker compose exec dcv-server pgrep gdm3
+docker compose exec dcv-server ps aux | grep -E 'openbox|xfce4'
 ```
 
-3. Check X11 socket:
+3. Check DCV logs:
 ```bash
-docker compose exec dcv-server ls -la /tmp/.X11-unix/
+docker compose exec dcv-server cat /var/log/dcv/server.log | tail -50
 ```
 
 ### GPU Not Detected
@@ -192,9 +198,9 @@ docker compose exec dcv-server groups ubuntu
 
 ### Change Password
 
-Edit `dcv-server/entrypoint.sh` and change the line:
+Edit `dcv-server/dcv-setup.sh` and change the line:
 ```bash
-echo "ubuntu:1234" | chpasswd
+echo "ubuntu:brevdemo123" | chpasswd
 ```
 
 ### Install Additional Software
@@ -218,40 +224,21 @@ Edit `dcv-server/dcv.conf` to customize:
 
 ### Brev Setup Script
 
-Create a `brev-setup.sh` in your Brev instance:
+A `setup.sh` script is included in the repository for automatic deployment on Brev instances.
+
+To use it on a Brev instance:
 
 ```bash
-#!/bin/bash
-set -e
-
-echo "Setting up DCV Launchable..."
-
-# Clone repository
-git clone <your-repo-url> ~/dcv-launchable
-cd ~/dcv-launchable
-
-# Start services
-docker compose up -d
-
-# Wait for services to be ready
-echo "Waiting for services to start..."
-sleep 30
-
-# Show connection info
-echo "=========================================="
-echo "DCV Server is ready!"
-echo "=========================================="
-echo "DCV Web: https://$(curl -s ifconfig.me):8443"
-echo "SSH: ssh ubuntu@$(curl -s ifconfig.me)"
-echo "Username: ubuntu"
-echo "Password: brevdemo123"
-echo "=========================================="
+cd /path/to/DCV_launchable
+./setup.sh
 ```
 
-Make it executable:
-```bash
-chmod +x brev-setup.sh
-```
+The setup script will:
+- Verify Docker is available
+- Deploy the stack using `just` (or `docker compose` if `just` is not available)
+- Display connection information
+
+For Brev launchable configuration, use this setup script in your launchable's setup phase.
 
 ## Security Considerations
 
