@@ -15,10 +15,17 @@ An unofficial sample Brev launchable providing Ubuntu 22.04 desktop environment 
 
 1. [Deploy here](https://brev.nvidia.com/launchable/deploy?launchableID=env-38thl4fP60kYlwOPvpYBZtdvyYs)
 
+   Note: Deployment can take up to 20 minutes.
+
 2. Connect to remote desktop:
    - **URL**: `https://<instance-hostname>:8443/dcv`
    - **Username**: `ubuntu`
    - **Password**: `brev1234`
+
+3. From the desktop, open a terminal window and run:
+   ```bash
+   isaacsim
+   ```
 
 ### Connect via Brev Shell
 
