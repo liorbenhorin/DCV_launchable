@@ -88,6 +88,14 @@ COPY dcv.conf /etc/dcv/dcv.conf
 COPY dcvsessioninit /etc/dcv/dcvsessioninit
 RUN chmod +x /etc/dcv/dcvsessioninit
 
+# Copy custom wallpapers and replace XFCE defaults
+COPY wallpapers/*.jpg /usr/share/backgrounds/dcv/
+RUN cp /usr/share/backgrounds/dcv/2560X1600.jpg /usr/share/backgrounds/xfce/xfce-blue.jpg \
+    && cp /usr/share/backgrounds/dcv/2560X1600.jpg /usr/share/backgrounds/xfce/xfce-stripes.png \
+    && cp /usr/share/backgrounds/dcv/2560X1600.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg \
+    && cp /usr/share/backgrounds/dcv/2560X1600.jpg /usr/share/backgrounds/xfce/xfce-verticals.png \
+    && cp /usr/share/backgrounds/dcv/2560X1600.jpg /usr/share/backgrounds/greybird.svg
+
 # Copy setup script and systemd service
 COPY dcv-setup.sh /usr/local/bin/dcv-setup.sh
 COPY dcv-setup.service /etc/systemd/system/dcv-setup.service

@@ -1,9 +1,6 @@
 #!/bin/bash
 # XFCE DCV session with modern theming
 
-# Set background to dark grey
-xsetroot -solid "#303030"
-
 # Disable thumbnail generation for faster file browser
 export TUMBLER_DISABLE=1
 
@@ -26,7 +23,7 @@ sleep 2
 # Start XFCE panel
 xfce4-panel --disable-wm-check &
 
-# Start desktop
+# Start desktop (will use custom wallpaper that replaced XFCE defaults)
 xfdesktop --disable-wm-check &
 
 # Keep session alive
