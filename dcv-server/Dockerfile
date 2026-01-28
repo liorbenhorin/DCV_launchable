@@ -79,8 +79,9 @@ RUN mkdir -p /home/ubuntu/.config/gtk-3.0 \
     && echo 'gtk-font-name="Noto Sans 10"' >> /home/ubuntu/.gtkrc-2.0 \
     && chown -R ubuntu:ubuntu /home/ubuntu/.config /home/ubuntu/.gtkrc-2.0
 
-# Configure openbox to disable Alt+Click window dragging
+# Configure openbox to disable Alt+Click window dragging and apply Arc-Dark theme
 COPY config/openbox/rc.xml /home/ubuntu/.config/openbox/rc.xml
+COPY config/openbox/Arc-Dark-theme /usr/share/themes/Arc-Dark/openbox-3
 RUN chown -R ubuntu:ubuntu /home/ubuntu/.config/openbox
 
 # Copy desktop shortcuts

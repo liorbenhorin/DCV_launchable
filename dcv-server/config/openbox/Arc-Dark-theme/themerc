@@ -1,0 +1,69 @@
+# Arc-Dark openbox theme
+# Based on Arc-Dark GTK theme colors
+
+# Window geometry
+padding.width: 6
+padding.height: 6
+border.width: 1
+window.client.padding.width: 0
+window.client.padding.height: 0
+window.handle.width: 0
+
+# Menu geometry
+menu.border.width: 1
+menu.separator.padding.width: 6
+menu.separator.padding.height: 3
+
+# Border colors
+window.active.border.color: #2b303b
+window.inactive.border.color: #383c4a
+menu.border.color: #2b303b
+
+# Title colors
+window.active.title.bg: flat solid
+window.active.title.bg.color: #383c4a
+window.inactive.title.bg: flat solid
+window.inactive.title.bg.color: #404552
+
+# Label (title text area) colors
+window.active.label.bg: flat solid
+window.active.label.bg.color: #383c4a
+window.inactive.label.bg: flat solid
+window.inactive.label.bg.color: #404552
+
+# Text colors
+window.active.label.text.color: #d3dae3
+window.inactive.label.text.color: #7c818c
+menu.title.text.color: #d3dae3
+menu.items.text.color: #d3dae3
+menu.items.disabled.text.color: #7c818c
+menu.items.active.text.color: #ffffff
+
+# Button colors
+window.active.button.unpressed.bg: flat solid
+window.active.button.unpressed.bg.color: #383c4a
+window.active.button.unpressed.image.color: #d3dae3
+
+window.active.button.pressed.bg: flat solid
+window.active.button.pressed.bg.color: #5294e2
+window.active.button.pressed.image.color: #ffffff
+
+window.active.button.hover.bg: flat solid
+window.active.button.hover.bg.color: #5294e2
+window.active.button.hover.image.color: #ffffff
+
+window.inactive.button.unpressed.bg: flat solid
+window.inactive.button.unpressed.bg.color: #404552
+window.inactive.button.unpressed.image.color: #7c818c
+
+# Menu colors
+menu.title.bg: flat solid
+menu.title.bg.color: #2f343f
+menu.items.bg: flat solid
+menu.items.bg.color: #383c4a
+menu.items.active.bg: flat solid
+menu.items.active.bg.color: #5294e2
+
+# Justification
+window.label.text.justify: left
+menu.title.text.justify: center
