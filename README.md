@@ -13,7 +13,7 @@ An unofficial sample Brev launchable providing Ubuntu 22.04 desktop environment 
 
 ### Deploy on Brev
 
-1. [Deploy here](https://brev.nvidia.com/launchable/deploy?launchableID=env-38th1nqsKnMuw3EkAvER3SxV6tu)
+1. [Deploy here](https://brev.nvidia.com/launchable/deploy?launchableID=env-38thl4fP60kYlwOPvpYBZtdvyYs)
 
 2. Connect to remote desktop:
    - **URL**: `https://<instance-hostname>:8443/dcv`
