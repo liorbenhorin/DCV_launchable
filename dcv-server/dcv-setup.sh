@@ -13,6 +13,10 @@ mkdir -p /run/user/1000
 chown ubuntu:ubuntu /run/user/1000
 chmod 700 /run/user/1000
 
+# Setup theme for ubuntu user
+echo "Configuring theme..."
+/usr/local/bin/setup-theme.sh
+
 # Wait for DCV server to be ready
 echo "Waiting for DCV server to start..."
 for i in {1..30}; do

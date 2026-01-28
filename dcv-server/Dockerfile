@@ -12,8 +12,14 @@ RUN apt-get update && apt-get install -y \
     xfce4-terminal \
     thunar \
     openbox \
+    plank \
     elementary-xfce-icon-theme \
     adwaita-icon-theme-full \
+    arc-theme \
+    numix-gtk-theme \
+    papirus-icon-theme \
+    fonts-noto \
+    fonts-noto-color-emoji \
     firefox \
     openssh-server \
     sudo \
@@ -71,6 +77,13 @@ COPY dcv.conf /etc/dcv/dcv.conf
 # Copy custom session init script
 COPY dcvsessioninit /etc/dcv/dcvsessioninit
 RUN chmod +x /etc/dcv/dcvsessioninit
+
+# Copy openbox theme config
+COPY openbox-rc.xml /etc/openbox-rc.xml
+
+# Copy theme setup script
+COPY setup-theme.sh /usr/local/bin/setup-theme.sh
+RUN chmod +x /usr/local/bin/setup-theme.sh
 
 # Copy setup script and systemd service
 COPY dcv-setup.sh /usr/local/bin/dcv-setup.sh
