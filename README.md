@@ -1,21 +1,43 @@
 # NiceDCV Brev Launchable
 
-A Brev launchable that provides a complete Ubuntu 22.04 XFCE desktop environment with NICE DCV remote desktop access and GPU acceleration support.
+A Brev launchable that provides a complete Ubuntu 22.04 XFCE desktop environment with NICE DCV remote desktop access, GPU acceleration, and Isaac Sim support.
+
+## Quick Connect
+
+After deployment is complete, connect to your remote desktop:
+
+**DCV Web Client (Recommended):**
+- URL: `https://<instance-hostname>:8443/dcv`
+- Username: `ubuntu`
+- Password: `brev1234`
+
+**DCV Native Client:**
+- Download from: https://download.nice-dcv.com/
+- Server: `<instance-hostname>:8443`
+- Username: `ubuntu`
+- Password: `brev1234`
+
+**SSH Access:**
+```bash
+ssh ubuntu@<instance-hostname>
+# Password: brev1234
+```
 
 ## Overview
 
 This launchable provides:
 - **Remote Desktop**: NICE DCV server with web and native client support
 - **SSH Access**: Standard SSH access for terminal operations
-- **XFCE Desktop**: Lightweight XFCE4 desktop with openbox window manager, optimized for containers
+- **XFCE Desktop**: Modern Arc-Dark themed XFCE4 desktop with openbox window manager
 - **GPU Acceleration**: NVIDIA GPU support for graphics and compute
+- **Isaac Sim Environment**: Python 3.11 with Isaac Sim 5.1.0 and PyTorch pre-installed
 - **Pre-installed Software**: Firefox, VSCode, and essential development tools
 
 ## Architecture
 
 ```
-User Browser/Client → Nginx (SSL) → DCV Server (XFCE Desktop + GPU)
-User SSH Client → Nginx → DCV Server (SSH)
+User Browser/Client → DCV Server (HTTPS :8443) → XFCE Desktop + GPU
+User SSH Client → DCV Server (SSH :22)
 ```
 
 ## Prerequisites
@@ -23,7 +45,7 @@ User SSH Client → Nginx → DCV Server (SSH)
 - Brev account with access to GPU instances
 - NVIDIA GPU-enabled instance
 - Docker and Docker Compose installed
-- Ports 22, 80, 443, and 8443 available
+- Port 8443 and 22 available
 
 ## Quick Start
 
@@ -32,11 +54,6 @@ User SSH Client → Nginx → DCV Server (SSH)
 ```bash
 git clone <repository-url>
 cd DCV_launchable
-just deploy
-```
-
-Or without `just`:
-```bash
 docker compose up -d
 ```
 
@@ -49,37 +66,20 @@ docker compose logs -f dcv-server
 
 ### 3. Connect
 
-**DCV Web Client:**
-- URL: `https://<instance-ip>:8443/dcv`
-- Username: `ubuntu`
-- Password: `brevdemo123`
-
-**DCV Native Client:**
-- Download from: https://download.nice-dcv.com/
-- Server: `<instance-ip>:8443`
-- Username: `ubuntu`
-- Password: `brevdemo123`
-
-**SSH Access:**
-```bash
-ssh ubuntu@<instance-ip>
-# Password: brevdemo123
-```
+See **Quick Connect** section at the top of this README.
 
 ## Configuration
 
 ### Default Credentials
 
 - **Username**: `ubuntu`
-- **Password**: `brevdemo123`
+- **Password**: `brev1234`
 - **Sudo**: Passwordless sudo enabled
 
 ### Ports
 
 - **22**: SSH access
-- **80**: HTTP (redirects to HTTPS)
-- **443**: HTTPS (proxies to DCV)
-- **8443**: DCV server (internal)
+- **8443**: DCV server HTTPS access
 
 ### DCV Settings
 
@@ -90,9 +90,32 @@ The DCV server is configured with:
 - QUIC protocol enabled
 - Clipboard integration
 - Stylus and touch input support
-- XFCE4 desktop with openbox window manager for container stability
+- XFCE4 desktop with Arc-Dark theme and openbox window manager
 
 Configuration file: `dcv-server/dcv.conf`
+
+### Desktop Theme
+
+- **GTK Theme**: Arc-Dark
+- **Icon Theme**: Papirus-Dark
+- **Window Manager**: openbox with Arc-Dark theme
+- **Font**: Noto Sans
+- **Alt+Click**: Disabled for window dragging (use Super+Click instead)
+
+## Isaac Sim Environment
+
+Pre-installed in the `isaac` virtual environment:
+- **Python**: 3.11.14
+- **Isaac Sim**: 5.1.0 with all extras
+- **PyTorch**: 2.7.0 with CUDA 12.8
+- **uv**: Fast Python package manager
+
+The isaac environment is automatically activated in new terminal sessions.
+
+To manually activate:
+```bash
+source /opt/isaac/isaac/bin/activate
+```
 
 ## GPU Support
 
@@ -133,19 +156,20 @@ docker compose exec dcv-server dcv list-sessions
 
 ### Cannot Connect to DCV
 
-1. Verify nginx is running:
+1. Verify DCV is listening on port 8443:
 ```bash
-docker compose logs nginx
+netstat -tlnp | grep 8443
 ```
 
-2. Check port accessibility:
+2. Check DCV server status:
 ```bash
-netstat -tlnp | grep -E '(443|8443)'
+docker compose exec dcv-server systemctl status dcvserver
 ```
 
-3. Verify SSL certificate:
+3. Recreate the session:
 ```bash
-docker compose exec nginx ls -la /etc/nginx/ssl/
+docker compose exec dcv-server dcv close-session ubuntu-session
+docker compose exec dcv-server dcv create-session --type=virtual --owner ubuntu --storage-root /home/ubuntu ubuntu-session
 ```
 
 ### SSH Connection Issues
@@ -194,13 +218,25 @@ docker compose exec dcv-server nvidia-smi
 docker compose exec dcv-server groups ubuntu
 ```
 
+### Isaac Sim Issues
+
+1. Verify environment is activated:
+```bash
+docker compose exec dcv-server bash -c 'source /opt/isaac/isaac/bin/activate && python --version'
+```
+
+2. Test Isaac Sim installation:
+```bash
+docker compose exec dcv-server bash -c 'source /opt/isaac/isaac/bin/activate && python -c "import isaacsim; print(isaacsim.__version__)"'
+```
+
 ## Customization
 
 ### Change Password
 
 Edit `dcv-server/dcv-setup.sh` and change the line:
 ```bash
-echo "ubuntu:brevdemo123" | chpasswd
+echo "ubuntu:brev1234" | chpasswd
 ```
 
 ### Install Additional Software
@@ -220,22 +256,29 @@ Edit `dcv-server/dcv.conf` to customize:
 - Clipboard: `primary-selection-paste`
 - And more...
 
+### Customize Isaac Environment
+
+Edit `dcv-server/scripts/setup-isaac.sh` to add additional Python packages:
+```bash
+uv pip install your-package-here
+```
+
 ## Brev Integration
 
 ### Brev Setup Script
 
-A `setup.sh` script is included in the repository for automatic deployment on Brev instances.
+The `brev-startup.sh` script is included for automatic deployment on Brev instances.
 
 To use it on a Brev instance:
 
 ```bash
 cd /path/to/DCV_launchable
-./setup.sh
+./brev-startup.sh
 ```
 
 The setup script will:
 - Verify Docker is available
-- Deploy the stack using `just` (or `docker compose` if `just` is not available)
+- Deploy the stack using `docker compose`
 - Display connection information
 
 For Brev launchable configuration, use this setup script in your launchable's setup phase.
@@ -244,10 +287,10 @@ For Brev launchable configuration, use this setup script in your launchable's se
 
 ⚠️ **Important Security Notes:**
 
-1. **Default Password**: The default password `brevdemo123` is insecure. Change it for production use.
-2. **Self-Signed Certificate**: Nginx uses a self-signed SSL certificate. Your browser will show a warning.
+1. **Default Password**: The default password `brev1234` is for development use. Change it for production.
+2. **Self-Signed Certificate**: DCV uses a self-signed SSL certificate. Your browser will show a warning.
 3. **Privileged Container**: The DCV container runs in privileged mode for display manager access.
-4. **Host Network**: Containers use host networking for simplicity. Consider bridge networking for isolation.
+4. **Host Network**: Container uses host networking for simplicity. Consider bridge networking for isolation.
 
 ## Development
 
@@ -272,14 +315,12 @@ docker compose logs -f
 
 # Specific service
 docker compose logs -f dcv-server
-docker compose logs -f nginx
 ```
 
 ### Shell Access
 
 ```bash
 docker compose exec dcv-server bash
-docker compose exec nginx sh
 ```
 
 ## Contributing
@@ -304,6 +345,6 @@ For issues and questions:
 ## Acknowledgments
 
 - NICE DCV by AWS
-- Ubuntu and GNOME projects
-- OpenResty/Nginx
+- Ubuntu and XFCE projects
+- NVIDIA Isaac Sim
 - Brev.dev platform
