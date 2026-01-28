@@ -19,8 +19,5 @@ xfce4-panel --disable-wm-check &
 # Start desktop (with --disable-wm-check)
 xfdesktop --disable-wm-check &
 
-# Start terminal
-xfce4-terminal --maximize &
-
 # Keep session alive
 wait
