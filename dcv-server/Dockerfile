@@ -113,6 +113,11 @@ RUN chmod +x /usr/local/bin/dcv-setup.sh
 COPY scripts/setup-isaac.sh /tmp/setup-isaac.sh
 RUN chmod +x /tmp/setup-isaac.sh && /tmp/setup-isaac.sh && rm /tmp/setup-isaac.sh
 
+# Auto-activate isaac venv in bashrc
+RUN echo "" >> /home/ubuntu/.bashrc \
+    && echo "# Auto-activate isaac virtual environment" >> /home/ubuntu/.bashrc \
+    && echo "source /opt/isaac/isaac/bin/activate" >> /home/ubuntu/.bashrc
+
 # Configure systemd services
 RUN systemctl mask systemd-udevd.service \
     && systemctl mask systemd-oomd.service \
