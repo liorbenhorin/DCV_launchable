@@ -2,7 +2,7 @@
 # Initial setup script run once by systemd
 
 # Set ubuntu user password
-echo "ubuntu:brevdemo123" | chpasswd
+echo "ubuntu:brev1234" | chpasswd
 
 # Create DCV log directory
 mkdir -p /var/log/dcv
