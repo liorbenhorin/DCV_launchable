@@ -1,4 +1,4 @@
-# NiceDCV Brev Launchable
+# Isaac Sim DCV Brev Launchable
 
 A Brev launchable that provides a complete Ubuntu 22.04 XFCE desktop environment with NICE DCV remote desktop access, GPU acceleration, and Isaac Sim support.
 
@@ -52,8 +52,8 @@ User SSH Client → DCV Server (SSH :22)
 ### 1. Clone and Deploy
 
 ```bash
-git clone <repository-url>
-cd DCV_launchable
+git clone git@github.com:liorbenhorin/Isaac_DCV_launchable.git
+cd Isaac_DCV_launchable
 docker compose up -d
 ```
 
@@ -272,7 +272,7 @@ The `brev-startup.sh` script is included for automatic deployment on Brev instan
 To use it on a Brev instance:
 
 ```bash
-cd /path/to/DCV_launchable
+cd /path/to/Isaac_DCV_launchable
 ./brev-startup.sh
 ```
 
@@ -339,8 +339,8 @@ Contributions are welcome! Please:
 ## Support
 
 For issues and questions:
-- GitHub Issues: [Your Repo URL]
-- Documentation: [Your Docs URL]
+- GitHub Issues: https://github.com/liorbenhorin/Isaac_DCV_launchable/issues
+- Documentation: https://github.com/liorbenhorin/Isaac_DCV_launchable
 
 ## Acknowledgments
 
