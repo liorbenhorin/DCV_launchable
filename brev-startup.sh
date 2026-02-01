@@ -4,7 +4,7 @@
 
 set -e
 
-cd ~/DCV_launchable
+cd ~/Isaac_DCV_launchable
 
 echo "Starting DCV Launchable deployment..."
 
