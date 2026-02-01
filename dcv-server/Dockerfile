@@ -1,13 +1,15 @@
 FROM liorbenhorin/isaac-dcv-base:latest
 
-# Setup Isaac environment with Python 3.11 and uv
-COPY scripts/setup-isaac.sh /tmp/setup-isaac.sh
-RUN chmod +x /tmp/setup-isaac.sh && /tmp/setup-isaac.sh && rm /tmp/setup-isaac.sh
+# Copy Isaac setup script to run at first boot
+COPY scripts/setup-isaac.sh /usr/local/bin/setup-isaac.sh
+RUN chmod +x /usr/local/bin/setup-isaac.sh
 
-# Auto-activate isaac venv in bashrc
+# Auto-activate isaac venv in bashrc (will exist after first boot)
 RUN echo "" >> /home/ubuntu/.bashrc \
     && echo "# Auto-activate isaac virtual environment" >> /home/ubuntu/.bashrc \
-    && echo "source /home/ubuntu/.isaac/isaac/bin/activate" >> /home/ubuntu/.bashrc
+    && echo "if [ -f /home/ubuntu/.isaac/isaac/bin/activate ]; then" >> /home/ubuntu/.bashrc \
+    && echo "    source /home/ubuntu/.isaac/isaac/bin/activate" >> /home/ubuntu/.bashrc \
+    && echo "fi" >> /home/ubuntu/.bashrc
 
 # Configure systemd services
 RUN systemctl mask systemd-udevd.service \

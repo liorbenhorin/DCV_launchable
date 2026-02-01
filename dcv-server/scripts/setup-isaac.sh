@@ -24,10 +24,10 @@ mkdir -p /home/ubuntu/.isaac
 cd /home/ubuntu/.isaac
 uv venv isaac --python python3.11
 
-# Install Isaac Sim packages
+# Install Isaac Sim packages with parallel downloads
 source isaac/bin/activate
-uv pip install "isaacsim[all,extscache]==5.1.0" --extra-index-url https://pypi.nvidia.com
-uv pip install -U torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu128
+UV_CONCURRENT_DOWNLOADS=100 uv pip install "isaacsim[all,extscache]==5.1.0" --extra-index-url https://pypi.nvidia.com
+UV_CONCURRENT_DOWNLOADS=100 uv pip install -U torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu128
 
 # Make the venv owned by ubuntu user with full write permissions
 chown -R ubuntu:ubuntu /home/ubuntu/.isaac
