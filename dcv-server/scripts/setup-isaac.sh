@@ -19,9 +19,9 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 cp /root/.local/bin/uv /usr/local/bin/
 cp /root/.local/bin/uvx /usr/local/bin/
 
-# Create uv venv called isaac in /opt/isaac
-mkdir -p /opt/isaac
-cd /opt/isaac
+# Create uv venv called isaac in user's home directory
+mkdir -p /home/ubuntu/.isaac
+cd /home/ubuntu/.isaac
 uv venv isaac --python python3.11
 
 # Install Isaac Sim packages
@@ -29,8 +29,8 @@ source isaac/bin/activate
 uv pip install "isaacsim[all,extscache]==5.1.0" --extra-index-url https://pypi.nvidia.com
 uv pip install -U torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu128
 
-# Make the venv owned by ubuntu user with proper write permissions
-chmod -R u+w /opt/isaac/isaac
-chown -R ubuntu:ubuntu /opt/isaac
+# Make the venv owned by ubuntu user with full write permissions
+chown -R ubuntu:ubuntu /home/ubuntu/.isaac
+chmod -R u+rwX /home/ubuntu/.isaac
 
 echo "Isaac environment setup complete"

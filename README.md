@@ -69,5 +69,5 @@ The `isaac` virtual environment is automatically activated in new terminals.
 
 To manually activate:
 ```bash
-source /opt/isaac/isaac/bin/activate
+source ~/.isaac/isaac/bin/activate
 ```

@@ -117,7 +117,7 @@ RUN chmod +x /tmp/setup-isaac.sh && /tmp/setup-isaac.sh && rm /tmp/setup-isaac.s
 # Auto-activate isaac venv in bashrc
 RUN echo "" >> /home/ubuntu/.bashrc \
     && echo "# Auto-activate isaac virtual environment" >> /home/ubuntu/.bashrc \
-    && echo "source /opt/isaac/isaac/bin/activate" >> /home/ubuntu/.bashrc
+    && echo "source /home/ubuntu/.isaac/isaac/bin/activate" >> /home/ubuntu/.bashrc
 
 # Configure systemd services
 RUN systemctl mask systemd-udevd.service \
