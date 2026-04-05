@@ -59,13 +59,6 @@ for i in {1..30}; do
     sleep 1
 done
 
-# Start GNOME session as ubuntu user
-echo "Starting GNOME session..."
-runuser -u ubuntu -- env DISPLAY=:0 XDG_SESSION_TYPE=x11 XDG_RUNTIME_DIR=/run/user/1000 gnome-session &
-GNOME_PID=$!
-sleep 5
-echo "GNOME session started (PID: $GNOME_PID)"
-
 # Start DCV server (must run as dcv user, using wrapper script)
 echo "Starting DCV server..."
 # Run in foreground initially to see errors
@@ -88,10 +81,14 @@ fi
 echo "Waiting for DCV server to be ready..."
 sleep 10
 
+# Create DCV session explicitly (belt-and-suspenders in case create-session=true didn't fire)
+echo "Creating DCV session..."
+dcv create-session --owner ubuntu --type console console 2>&1 || dcv list-sessions | grep -q console && echo "Session already exists"
+
 # List sessions
 echo "=============================================="
 echo "Active DCV sessions:"
-dcv list-sessions || echo "No sessions yet (will be created automatically)"
+dcv list-sessions
 echo "=============================================="
 echo "DCV Server is ready!"
 echo "=============================================="

@@ -17,7 +17,12 @@ services:
     volumes:
       - dcv-home:/home/ubuntu
       - dcv-cache:/var/cache
+      - dcv-cache-root:/root/.cache
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/ubuntu/github-isaac/omni_isaac_sim:/home/ubuntu/github-isaac/omni_isaac_sim
+      - /home/ubuntu/.cache:/home/ubuntu/.cache
+      - /home/ubuntu/.local:/home/ubuntu/.local
     tmpfs:
       - /run
       - /run/lock
@@ -40,4 +45,6 @@ volumes:
   dcv-home:
     driver: local
   dcv-cache:
+    driver: local
+  dcv-cache-root:
     driver: local
