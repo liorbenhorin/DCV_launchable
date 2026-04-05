@@ -21,11 +21,11 @@ An unofficial sample Brev launchable providing Ubuntu 22.04 desktop environment 
    - Display installation progress and notify when complete
 
 2. Connect to remote desktop:
-   - **URL**: `https://<instance-hostname>:8443/#ubuntu-session`
+   - **URL**: `https://<instance-hostname>:8443/dcv/#ubuntu-session`
    - **Username**: `ubuntu`
    - **Password**: `brev1234`
 
-   > **Note**: The `#ubuntu-session` hash is required to connect to the session. Using just `/dcv` will result in a "no session available" error.
+   > **Note**: The `#ubuntu-session` hash is required to connect directly to the session. Without it, you will see a "no session available" error after login.
 
 3. Once installation completes, open a terminal in the desktop and run:
    ```bash
